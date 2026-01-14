@@ -1,0 +1,13 @@
+{
+    "name": "rja-radio-backend",
+    "description": "Backend API for RJA Radio registration system",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1"
+        }
+    }
+}

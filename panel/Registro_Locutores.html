@@ -147,9 +147,6 @@
     </div>
 
     <script>
-        const isLocal = window.location.protocol === 'file:';
-        const storageKey = 'locutores_data';
-
         function obtenerCategoria() {
             const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
             return Array.from(checkboxes).map(cb => cb.value).join(', ');
@@ -169,62 +166,49 @@
             return true;
         }
 
+        // API wrapper: usa PHP backend
         async function apiGetAll() {
-            if (!isLocal) {
-                const res = await fetch('../database/locutores.php');
-                if (!res.ok) throw new Error(await res.text());
-                return res.json();
-            }
-            return JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const response = await fetch('database/locutores.php', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return await response.json();
         }
 
         async function apiCreate(item) {
-            if (!isLocal) {
-                const res = await fetch('../database/locutores.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(item) });
-                if (!res.ok) throw new Error(await res.text());
-                return res.json();
-            }
-            const arr = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            item.id = arr.length ? Math.max(...arr.map(r => r.id || 0)) + 1 : 1;
-            arr.push(item);
-            localStorage.setItem(storageKey, JSON.stringify(arr));
-            return { success: true, message: 'Guardado localmente', id: item.id };
+            const response = await fetch('database/locutores.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(item)
+            });
+            return await response.json();
         }
 
         async function apiUpdate(item) {
-            if (!isLocal) {
-                const res = await fetch('../database/locutores.php', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(item) });
-                if (!res.ok) throw new Error(await res.text());
-                return res.json();
-            }
-            const arr = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            const idx = arr.findIndex(r => r.id === item.id);
-            if (idx === -1) return { success: false, message: 'No encontrado' };
-            arr[idx] = item;
-            localStorage.setItem(storageKey, JSON.stringify(arr));
-            return { success: true, message: 'Actualizado localmente' };
+            const response = await fetch('database/locutores.php', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(item)
+            });
+            return await response.json();
         }
 
         async function apiGetById(id) {
-            if (!isLocal) {
-                const res = await fetch(`../database/locutores.php?id=${id}`);
-                if (!res.ok) throw new Error(await res.text());
-                return res.json();
-            }
-            const arr = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            return arr.find(r => r.id === id) || null;
+            const response = await fetch(`database/locutores.php?id=${id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+            return result.success === false ? null : result;
         }
 
         async function apiDelete(id) {
-            if (!isLocal) {
-                const res = await fetch('../database/locutores.php', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
-                if (!res.ok) throw new Error(await res.text());
-                return res.json();
-            }
-            let arr = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            arr = arr.filter(r => r.id !== id);
-            localStorage.setItem(storageKey, JSON.stringify(arr));
-            return { success: true, message: 'Eliminado localmente' };
+            const response = await fetch('database/locutores.php', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            });
+            return await response.json();
         }
 
         async function guardarRegistro(e) {

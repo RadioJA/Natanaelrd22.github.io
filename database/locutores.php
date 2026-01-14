@@ -26,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $periodo_inicio = $data['periodo_inicio'] ?? null;
     $periodo_fin = $data['periodo_fin'] ?? null;
     $dias_trabajo = $data['dias_trabajo'] ?? '';
+    $programa = trim($data['programa'] ?? '');
+    $slogan = trim($data['slogan'] ?? '');
+    $cantoTema = trim($data['cantoTema'] ?? '');
 
     $required = ['nombre', 'fecha_nacimiento', 'hora_inicio', 'hora_fin', 'periodo_inicio', 'periodo_fin'];
     foreach ($required as $f) {
@@ -39,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $periodo_inicio = in_array($periodo_inicio, ['AM', 'PM']) ? $periodo_inicio : 'AM';
     $periodo_fin = in_array($periodo_fin, ['AM', 'PM']) ? $periodo_fin : 'PM';
 
-    $sql = "INSERT INTO locutores (nombre, apellido, fecha_nacimiento, hora_inicio, hora_fin, periodo_inicio, periodo_fin, dias_trabajo) 
-            VALUES (:nombre, :apellido, :fecha_nacimiento, :hora_inicio, :hora_fin, :periodo_inicio, :periodo_fin, :dias_trabajo)";
+    $sql = "INSERT INTO locutores (nombre, apellido, fecha_nacimiento, hora_inicio, hora_fin, periodo_inicio, periodo_fin, dias_trabajo, programa, descripcion_programa, cantoTema)
+            VALUES (:nombre, :apellido, :fecha_nacimiento, :hora_inicio, :hora_fin, :periodo_inicio, :periodo_fin, :dias_trabajo, :programa, :slogan, :cantoTema)";
 
     $stmt = $pdo->prepare($sql);
 
@@ -53,7 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':hora_fin' => $hora_fin,
             ':periodo_inicio' => $periodo_inicio,
             ':periodo_fin' => $periodo_fin,
-            ':dias_trabajo' => $dias_trabajo
+            ':dias_trabajo' => $dias_trabajo,
+            ':programa' => $programa,
+            ':slogan' => $slogan,
+            ':cantoTema' => $cantoTema
         ]);
 
         http_response_code(201);
@@ -82,6 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $periodo_inicio = $input['periodo_inicio'] ?? null;
     $periodo_fin = $input['periodo_fin'] ?? null;
     $dias_trabajo = $input['dias_trabajo'] ?? '';
+    $programa = trim($input['programa'] ?? '');
+    $slogan = trim($input['slogan'] ?? '');
+    $cantoTema = trim($input['cantoTema'] ?? '');
 
     $required = ['nombre', 'fecha_nacimiento', 'hora_inicio', 'hora_fin', 'periodo_inicio', 'periodo_fin'];
     foreach ($required as $f) {
@@ -95,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $periodo_inicio = in_array($periodo_inicio, ['AM', 'PM']) ? $periodo_inicio : 'AM';
     $periodo_fin = in_array($periodo_fin, ['AM', 'PM']) ? $periodo_fin : 'PM';
 
-    $sql = "UPDATE locutores SET nombre = :nombre, apellido = :apellido, fecha_nacimiento = :fecha_nacimiento, hora_inicio = :hora_inicio, hora_fin = :hora_fin, periodo_inicio = :periodo_inicio, periodo_fin = :periodo_fin, dias_trabajo = :dias_trabajo WHERE id = :id";
+    $sql = "UPDATE locutores SET nombre = :nombre, apellido = :apellido, fecha_nacimiento = :fecha_nacimiento, hora_inicio = :hora_inicio, hora_fin = :hora_fin, periodo_inicio = :periodo_inicio, periodo_fin = :periodo_fin, dias_trabajo = :dias_trabajo, programa = :programa, descripcion_programa = :slogan, cantoTema = :cantoTema WHERE id = :id";
     $stmt = $pdo->prepare($sql);
 
     try {
@@ -108,6 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             ':periodo_inicio' => $periodo_inicio,
             ':periodo_fin' => $periodo_fin,
             ':dias_trabajo' => $dias_trabajo,
+            ':programa' => $programa,
+            ':slogan' => $slogan,
+            ':cantoTema' => $cantoTema,
             ':id' => $id
         ]);
 
