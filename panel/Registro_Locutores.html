@@ -8,6 +8,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- API Backend -->
+    <script src="../../js/firebase-api.js"></script>
     <style>
         .container { max-width: 1200px; }
         .form-container { background-color: #f8f9fa; padding: 20px; border-radius: 10px; }
@@ -166,49 +168,25 @@
             return true;
         }
 
-        // API wrapper: usa PHP backend
+        // API wrapper: usa Firebase Firestore
         async function apiGetAll() {
-            const response = await fetch('database/locutores.php', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            return await response.json();
+            return await apiGetAll_Locutores();
         }
 
         async function apiCreate(item) {
-            const response = await fetch('database/locutores.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(item)
-            });
-            return await response.json();
+            return await apiCreate_Locutores(item);
         }
 
         async function apiUpdate(item) {
-            const response = await fetch('database/locutores.php', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(item)
-            });
-            return await response.json();
+            return await apiUpdate_Locutores(item);
         }
 
         async function apiGetById(id) {
-            const response = await fetch(`database/locutores.php?id=${id}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const result = await response.json();
-            return result.success === false ? null : result;
+            return await apiGetById_Locutores(id);
         }
 
         async function apiDelete(id) {
-            const response = await fetch('database/locutores.php', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            });
-            return await response.json();
+            return await apiDelete_Locutores(id);
         }
 
         async function guardarRegistro(e) {

@@ -1,0 +1,20 @@
+# Permitir todos los métodos HTTP para archivos PHP
+<FilesMatch "\.php$">
+    Allow from all
+</FilesMatch>
+
+# Permitir acceso a carpeta database
+<Directory "database">
+    Allow from all
+    # Permitir POST, PUT, DELETE
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+    </IfModule>
+</Directory>
+
+# Headers para CORS
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+</IfModule>
