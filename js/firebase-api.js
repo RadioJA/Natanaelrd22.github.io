@@ -3,6 +3,22 @@
 
 const API_BASE_URL = window.location.origin === 'file://' ? 'http://localhost:8000' : '';
 
+// Función auxiliar para verificar si la respuesta es JSON válida
+async function parseJsonResponse(response) {
+    const text = await response.text();
+    
+    // Si la respuesta comienza con HTML, es un error del servidor
+    if (text.trim().startsWith('<')) {
+        throw new Error(`Server returned HTML error: ${text.substring(0, 100)}`);
+    }
+    
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error(`Invalid JSON response: ${text}`);
+    }
+}
+
 // Para Directores
 async function apiGetAll_Directores() {
     try {
@@ -13,11 +29,7 @@ async function apiGetAll_Directores() {
             }
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Error al obtener directores:', error);
@@ -35,9 +47,9 @@ async function apiCreate_Directores(item) {
             body: JSON.stringify(item)
         });
         
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         
-        if (!response.ok || !data.success) {
+        if (!data.success) {
             throw new Error(data.message || 'Error al guardar');
         }
         
@@ -125,11 +137,7 @@ async function apiGetAll_Locutores() {
             }
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Error al obtener locutores:', error);
@@ -147,9 +155,9 @@ async function apiCreate_Locutores(item) {
             body: JSON.stringify(item)
         });
         
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         
-        if (!response.ok || !data.success) {
+        if (!data.success) {
             throw new Error(data.message || 'Error al guardar');
         }
         
@@ -237,11 +245,7 @@ async function apiGetAll_Moderadores() {
             }
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Error al obtener moderadores:', error);
@@ -259,9 +263,9 @@ async function apiCreate_Moderadores(item) {
             body: JSON.stringify(item)
         });
         
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         
-        if (!response.ok || !data.success) {
+        if (!data.success) {
             throw new Error(data.message || 'Error al guardar');
         }
         

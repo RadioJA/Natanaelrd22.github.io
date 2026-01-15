@@ -18,6 +18,35 @@ if ($input === null && !empty($_POST)) {
     $input = $_POST;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // Si viene ?id=N, obtener un registro específico
+    if (!empty($_GET['id'])) {
+        $id = (int)$_GET['id'];
+        $sql = "SELECT * FROM moderadores WHERE id = :id";
+        $stmt = $pdo->prepare($sql);
+        try {
+            $stmt->execute([':id' => $id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($result ?: ['success' => false, 'message' => 'No encontrado']);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    } else {
+        // Obtener todos los registros
+        $sql = "SELECT * FROM moderadores ORDER BY nombre ASC";
+        try {
+            $result = $pdo->query($sql);
+            $registros = $result->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($registros);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = $input;
 
